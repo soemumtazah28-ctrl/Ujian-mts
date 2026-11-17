@@ -25,7 +25,28 @@ function tutupUjian(){ fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'
 function hapusSemua(){ if(prompt("Password Admin:")!=="MTs 2026"){alert("Password Salah!");return;} if(!confirm("YAKIN hapus semua?")) return; fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"hapusData"})}).then(()=>{alert("Semua data terhapus!");}); }
 tambahPG();
 
-
+function getKunci(){
+  let m = document.getElementById('mapel')?.value || 'mapel';
+  let k = document.getElementById('kelas')?.value || 'kelas';
+  return 'draf_' + m + '_' + k;
+}
+function simpanDraf(){
+  let data = {};
+  document.querySelectorAll('input, textarea, select').forEach(el=>{
+    if(el.id) data[el.id] = el.value;
+  });
+  localStorage.setItem(getKunci(), JSON.stringify(data));
+}
+function muatDraf(){
+  let data = JSON.parse(localStorage.getItem(getKunci()) || '{}');
+  for(let id in data){
+    let el = document.getElementById(id);
+    if(el) el.value = data[id];
+  }
+}
+document.addEventListener('input', simpanDraf);
+document.addEventListener('change', simpanDraf);
+window.addEventListener('load', muatDraf);
   </script>
 </body>
 </html>
