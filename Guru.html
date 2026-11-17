@@ -55,6 +55,46 @@ document.getElementById('mapel').onchange=muatDraf;
 document.getElementById('kelas').onchange=muatDraf;
 muatDraf();
   document.addEventListener('input', function(){ simpanDraf(); });
+  // === TAMBAH GAMBAR PERMANEN ===
+function pasangTombolGambar(){
+  document.querySelectorAll('textarea').forEach(t=>{
+    if(t.dataset.gambar) return;
+    t.dataset.gambar='1';
+    let b=document.createElement('button');
+    b.type='button';
+    b.textContent='📷 Tambah Gambar';
+    b.style='margin:5px 0;padding:6px 10px;background:#22c55e;color:white;border:none;border-radius:8px;cursor:pointer;display:block';
+    let inp=document.createElement('input');
+    inp.type='file'; inp.accept='image/*'; inp.style.display='none';
+    b.onclick=()=>inp.click();
+    inp.onchange=()=>{
+      let f=inp.files[0]; if(!f) return;
+      let r=new FileReader();
+      r.onload=e=>{
+        let img=new Image();
+        img.onload=()=>{
+          let c=document.createElement('canvas');
+          let max=800; let w=img.width, h=img.height;
+          if(w>max){ h=h*max/w; w=max; }
+          c.width=w; c.height=h;
+          c.getContext('2d').drawImage(img,0,0,w,h);
+          let kecil=c.toDataURL('image/jpeg',0.7);
+          let prev=document.createElement('img');
+          prev.src=kecil; prev.style='max-width:300px;display:block;margin:5px 0;border:1px solid #ddd;border-radius:8px';
+          t.after(prev);
+          t.value += '\n[GAMBAR]'+kecil;
+          alert('Gambar tos kapasang! Pencet SIMPAN SOAL Bos!');
+        };
+        img.src=e.target.result;
+      };
+      r.readAsDataURL(f);
+    };
+    t.after(b); t.after(inp);
+  });
+}
+setInterval(pasangTombolGambar,1000);
+pasangTombolGambar();
+// === SELESAI ===
 </script>
 </body>
 </html>
