@@ -45,8 +45,7 @@ function simpanDraf(){
 }
 function muatDraf(){
 lagiMuat=true;
-let t=localStorage.getItem('terakhir');
-if(t){let p=t.split('|');document.getElementById('mapel').value=p[0];document.getElementById('kelas').value=p[1];}
+
 let s=localStorage.getItem(getKunci());
 if(s){document.getElementById('listSoal').innerHTML=s;nomor=document.querySelectorAll('.box').length;}
 else{document.getElementById('listSoal').innerHTML='';tambahPG();}
