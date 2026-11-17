@@ -25,28 +25,30 @@ function tutupUjian(){ fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'
 function hapusSemua(){ if(prompt("Password Admin:")!=="MTs 2026"){alert("Password Salah!");return;} if(!confirm("YAKIN hapus semua?")) return; fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"hapusData"})}).then(()=>{alert("Semua data terhapus!");}); }
 tambahPG();
 
-function getKunci(){
-  let m = document.getElementById('mapel')?.value || 'mapel';
-  let k = document.getElementById('kelas')?.value || 'kelas';
-  return 'draf_' + m + '_' + k;
-}
+let lagiMuat = false;
+function getKunci(){ return 'draf_' + document.getElementById('mapel').value + '_' + document.getElementById('kelas').value; }
 function simpanDraf(){
-  let data = {};
-  document.querySelectorAll('input, textarea, select').forEach(el=>{
-    if(el.id) data[el.id] = el.value;
-  });
-  localStorage.setItem(getKunci(), JSON.stringify(data));
+  if(lagiMuat) return;
+  localStorage.setItem(getKunci(), document.getElementById('listSoal').innerHTML);
+  localStorage.setItem('terakhir', document.getElementById('mapel').value + '|' + document.getElementById('kelas').value);
 }
 function muatDraf(){
-  let data = JSON.parse(localStorage.getItem(getKunci()) || '{}');
-  for(let id in data){
-    let el = document.getElementById(id);
-    if(el) el.value = data[id];
-  }
+  lagiMuat = true;
+  let simpen = localStorage.getItem(getKunci());
+  if(simpen) document.getElementById('listSoal').innerHTML = simpen;
+  setTimeout(()=>{ lagiMuat = false; }, 100);
 }
-document.addEventListener('input', simpanDraf);
-document.addEventListener('change', simpanDraf);
-window.addEventListener('load', muatDraf);
-  </script>
+document.getElementById('listSoal').addEventListener('input', simpanDraf);
+document.getElementById('mapel').addEventListener('change', muatDraf);
+document.getElementById('kelas').addEventListener('change', muatDraf);
+window.addEventListener('load', ()=>{
+  let t = localStorage.getItem('terakhir');
+  if(t){
+    let p = t.split('|');
+    document.getElementById('mapel').value = p[0];
+    document.getElementById('kelas').value = p[1];
+  }
+  muatDraf();
+});  </script>
 </body>
 </html>
