@@ -23,7 +23,7 @@ function simpan(){ let boxes=document.querySelectorAll('.box'); if(boxes.length=
 function bukaUjian(){ fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"bukaUjian",mapel:document.getElementById('mapel').value,kelas:document.getElementById('kelas').value})}).then(()=>{alert("🟢 UJIAN DIBUKA! Siswa sekarang bisa masuk "+document.getElementById('mapel').value+" "+document.getElementById('kelas').value);}); }
 function tutupUjian(){ fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"tutupUjian",mapel:document.getElementById('mapel').value,kelas:document.getElementById('kelas').value})}).then(()=>{alert("🔴 UJIAN DITUTUP! Siswa tidak bisa masuk lagi.");}); }
 function hapusSemua(){ if(prompt("Password Admin:")!=="MTs 2026"){alert("Password Salah!");return;} if(!confirm("YAKIN hapus semua?")) return; fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"hapusData"})}).then(()=>{alert("Semua data terhapus!");}); }
-tambahPG();
+
 
 let lagiMuat = false;
 function getKunci(){ return 'draf_' + document.getElementById('mapel').value + '_' + document.getElementById('kelas').value; }
@@ -43,6 +43,18 @@ function simpanDraf(){
   localStorage.setItem(getKunci(), wadah.innerHTML);
   localStorage.setItem('terakhir', document.getElementById('mapel').value + '|' + document.getElementById('kelas').value);
 }
+function muatDraf(){
+lagiMuat=true;
+let t=localStorage.getItem('terakhir');
+if(t){let p=t.split('|');document.getElementById('mapel').value=p[0];document.getElementById('kelas').value=p[1];}
+let s=localStorage.getItem(getKunci());
+if(s){document.getElementById('listSoal').innerHTML=s;nomor=document.querySelectorAll('.box').length;}
+else{document.getElementById('listSoal').innerHTML='';tambahPG();}
+lagiMuat=false;
+}
+document.getElementById('mapel').onchange=muatDraf;
+document.getElementById('kelas').onchange=muatDraf;
+muatDraf();
 </script>
 </body>
 </html>
