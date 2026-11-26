@@ -1,52 +1,143 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UJIAN - MTs ASSALAM</title>
-<style>*{box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;margin:0;background:#eef2f7}.header{background:#1a237e;color:#fff;padding:22px 16px 30px;text-align:center;border-radius:0 0 28px 28px}.card{background:#fff;max-width:650px;margin:-18px auto 20px;padding:22px;border-radius:20px;box-shadow:0 5px 20px rgba(0,0,0,.08)}input,select,textarea{width:100%;padding:12px;margin:6px 0 10px;border-radius:12px;border:1.5px solid #ddd;font-size:15px}button{padding:14px;width:100%;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px}.biru{background:#1976d2;color:#fff}.hijau{background:#0b6e4f;color:#fff}.opt{border:1.5px solid #eee;padding:12px;border-radius:12px;margin:6px 0;cursor:pointer}.opt.pilih{background:#e3f2fd;border-color:#1976d2}</style></head>
+<style>*{box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;margin:0;background:#eef2f7}.header{background:#1a237e;color:#fff;padding:22px 16px 30px;text-align:center;border-radius:0 0 28px 28px}.card{background:#fff;max-width:650px;margin:-18px auto 20px;padding:22px;border-radius:20px;box-shadow:0 5px 20px rgba(0,0,0,.08)}input,select,textarea{width:100%;padding:12px;margin:6px 0 10px;border-radius:12px;border:1.5px solid #ddd;font-size:15px}button{padding:14px;width:100%;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px}.biru{background:#1976d2;color:#fff}.hijau{background:#0b6e4f;color:#fff}.abu{background:#78909c;color:#fff}.opt{border:1.5px solid #eee;padding:12px;border-radius:12px;margin:6px 0;cursor:pointer}.opt.pilih{background:#e3f2fd;border-color:#1976d2}.gambar-soal{max-width:100%;border-radius:12px;margin:10px 0;display:block;border:1px solid #ddd}.gambar-opt{max-width:100%;border-radius:8px;margin-top:8px;display:block}.progress{background:#e0e0e0;border-radius:20px;height:22px;overflow:hidden;margin:10px 0}.progress-bar{background:#0b6e4f;height:100%;width:0%;text-align:center;color:#fff;font-size:12px;line-height:22px;font-weight:800}.status-soal{font-size:12px;font-weight:800;padding:4px 10px;border-radius:20px;display:inline-block}.sudah{background:#e8f5e9;color:#0b6e4f}.belum{background:#fff3e0;color:#e65100}.kotak-soal{border:1.5px solid #eee;border-radius:14px;padding:12px;margin:12px 0}.timer-box{background:#fff3e0;border:2px solid #ff9800;padding:14px;border-radius:14px;text-align:center;font-weight:800;margin:12px 0;font-size:16px}.timer-box.buka{background:#e8f5e9;border-color:#0b6e4f;color:#0b6e4f}.terkirim{background:#e8f5e9;border:2px solid #0b6e4f;color:#0b6e4f;padding:16px;border-radius:14px;text-align:center;font-weight:800;margin:10px 0}button:disabled{opacity:.5;cursor:not-allowed}.nav{display:flex;gap:10px}.nav button{flex:1}</style></head>
 <body><div class="header"><div style="font-size:40px">🕌</div><h1 style="margin:5px 0">MTs ASSALAM</h1><p style="margin:0;opacity:.9">LEMAHSUGIH • UJIAN ONLINE</p><div style="background:#ffcc80;color:#000;display:inline-block;padding:6px 18px;border-radius:20px;margin-top:12px;font-weight:800;font-size:13px">✨ Semangat! Kamu Pasti Bisa ✨</div></div>
 <div class="card" id="loginBox"><h3 style="text-align:center">📝 MASUK UJIAN</h3><label>Nama Lengkap</label><input id="nama" placeholder="Contoh: Ahmad Hilqy"><label>Kelas</label><select id="kelas"><option>VII-A</option><option>VII-B</option><option>VIII-A</option><option>VIII-B</option><option>IX-A</option><option>IX-B</option></select><label>Mapel</label><select id="mapel"><option>AL-QUR'AN HADIS</option><option>AKIDAH AKHLAK</option><option>FIQIH</option><option>SKI</option><option>BAHASA ARAB</option><option>BTQ</option><option>BAHASA INDONESIA</option><option>BAHASA INGGRIS</option><option>MATEMATIKA</option><option>IPA</option><option>IPS</option><option>PPKN</option><option>PJOK</option><option>PRAKARYA</option><option>INFORMATIKA</option><option>SENI BUDAYA</option><option>MULOK BAHASA SUNDA</option></select><button class="biru" onclick="mulai()">🚀 MULAI UJIAN</button><p id="info" style="text-align:center;font-size:13px;color:#888">Pastikan Guru sudah klik BUKA UJIAN untuk mapel ini.</p></div>
-<div class="card" id="soalBox" style="display:none"><div id="soalArea"></div><button class="hijau" onclick="kirim()">✅ KIRIM JAWABAN</button></div>
+<div class="card" id="soalBox" style="display:none"><div id="soalArea"></div><div class="nav"><button class="abu" id="btnPrev" onclick="pindah(-1)">⬅️ SEBELUMNYA</button><button class="biru" id="btnNext" onclick="pindah(1)">LANJUT ➡️</button></div><button class="hijau" id="btnKirim" onclick="kirim()" style="display:none">✅ KIRIM JAWABAN</button></div>
 <script>
 const URL_SCRIPT="https://script.google.com/macros/s/AKfycbz2hCqcDkO15hsVd9NSLLrQruVQWUfKwIhBpdc1SFq_1p96tnsPPg-jw_t63PGzxQ/exec";
-let SOAL=[], NAMA="", KELAS_SISWA="", MAPEL_SISWA="", JAWAB_PG={}, JAWAB_ESSAY={};
+let SOAL=[], NAMA="", KELAS_SISWA="", MAPEL_SISWA="", JAWAB_PG={}, JAWAB_ESSAY={}, SUDAH_KIRIM=false, INDEX=0, SISA=60, TIMER=null, SUDAH_LEWAT={};
+const JEDA_DETIK=60;
+function kunciKirim(){ return "SUDAH_KIRIM_"+KELAS_SISWA+"_"+MAPEL_SISWA+"_"+NAMA.toUpperCase().trim(); }
 function mulai(){
   NAMA=document.getElementById('nama').value.trim();
   if(!NAMA){alert("Isi nama dulu!");return;}
   KELAS_SISWA=document.getElementById('kelas').value;
   MAPEL_SISWA=document.getElementById('mapel').value;
+  if(localStorage.getItem(kunciKirim())=="YA"){ alert("⛔ "+NAMA+", jawaban kamu untuk "+MAPEL_SISWA+" SUDAH TERKIRIM!\nTidak bisa mengerjakan lagi."); document.getElementById('info').innerText="✅ Jawaban sudah terkirim."; return; }
   document.getElementById('info').innerText="Mengecek apakah guru sudah membuka ujian...";
   fetch(URL_SCRIPT+"?mapel="+encodeURIComponent(MAPEL_SISWA)+"&kelas="+encodeURIComponent(KELAS_SISWA)).then(r=>r.json()).then(data=>{
-    if(data.error=="BELUM_DIBUKA"){ alert("⛔ UJIAN "+MAPEL_SISWA+" BELUM DIBUKA OLEH GURU!\nTunggu perintah guru ya, jangan buka mapel lain!"); document.getElementById('info').innerText="Belum dibuka guru."; return; }
+    if(data.error=="BELUM_DIBUKA"){ alert("⛔ UJIAN "+MAPEL_SISWA+" BELUM DIBUKA OLEH GURU!"); document.getElementById('info').innerText="Belum dibuka guru."; return; }
     SOAL=data;
-    if(!SOAL || SOAL.length==0){ alert("Soal belum diupload guru untuk "+MAPEL_SISWA+" kelas "+KELAS_SISWA); return; }
+    if(!SOAL || SOAL.length==0){ alert("Soal belum diupload guru"); return; }
     document.getElementById('loginBox').style.display='none';
     document.getElementById('soalBox').style.display='block';
-    tampilSoal();
-  }).catch(e=>{ alert("Gagal konek ke server, cek internet / link script!"); });
+    INDEX=0; tampilSatuSoal();
+  }).catch(e=>{ alert("Gagal konek ke server!"); });
 }
-function tampilSoal(){
-  let h="<h3>"+MAPEL_SISWA+" - "+KELAS_SISWA+"</h3><p>Nama: <b>"+NAMA+"</b></p><hr>";
-  SOAL.forEach((q,i)=>{
-    h+="<p><b>Soal "+(i+1)+".</b> "+q.soal+"</p>";
-    if(q.tipe=="PG"){
-      ["A","B","C","D"].forEach(k=>{
-        let val = k=="A"?q.a : k=="B"?q.b : k=="C"?q.c : q.d;
-        h+="<div class='opt' onclick=\"pilih("+i+",'"+k+"',this)\"><b>"+k+".</b> "+val+"</div>";
-      });
-    } else {
-      h+="<textarea oninput=\"JAWAB_ESSAY["+i+"]=this.value\" placeholder='Tulis jawaban essay disini...'></textarea>";
+function ambilGambar(q){ let g=q.gambar||q.image||q.foto||q.gambar_soal||q.img||q.gambarSoal||""; if(g && (g.indexOf("data:image")===0||g.indexOf("http")===0)) return "<img class='gambar-soal' src='"+g+"'>"; return ""; }
+function bersihkanTeks(t){ if(!t) return ""; t=String(t); t=t.replace(/\[GAMBAR[^\]]*\]/gi,""); t=t.replace(/data:image\/[a-z]+;base64,[A-Za-z0-9+\/=]+/gi,""); return t; }
+function hitungSudah(){ let s=0; SOAL.forEach((q,i)=>{ if(q.tipe=="PG"){ if(JAWAB_PG[i]) s++; } else { if(JAWAB_ESSAY[i]&&JAWAB_ESSAY[i].trim()!="") s++; } }); return s; }
+function mulaiTimer(){
+  clearInterval(TIMER);
+  // Kalau soal ini sudah pernah dilewati 1 menit, langsung buka
+  if(SUDAH_LEWAT[INDEX]){ document.getElementById('timerBox').className="timer-box buka"; document.getElementById('timerBox').innerText="✅ Waktu 1 menit sudah lewat, boleh lanjut!"; document.getElementById('btnNext').disabled=false; return; }
+  SISA=JEDA_DETIK;
+  document.getElementById('btnNext').disabled=true;
+  let box=document.getElementById('timerBox');
+  if(box) box.className="timer-box";
+  TIMER=setInterval(()=>{
+    SISA--;
+    let b=document.getElementById('timerBox');
+    if(b) b.innerText="⏳ Baca & kerjakan dulu... Tunggu "+SISA+" detik untuk lanjut";
+    if(SISA<=0){
+      clearInterval(TIMER);
+      SUDAH_LEWAT[INDEX]=true;
+      if(b){ b.className="timer-box buka"; b.innerText="✅ Waktu 1 menit sudah lewat, boleh lanjut!"; }
+      let n=document.getElementById('btnNext'); if(n) n.disabled=false;
     }
-  });
+  },1000);
+  let b2=document.getElementById('timerBox');
+  if(b2) b2.innerText="⏳ Baca & kerjakan dulu... Tunggu "+SISA+" detik untuk lanjut";
+}
+function tampilSatuSoal(){
+  let q=SOAL[INDEX];
+  let sudah=hitungSudah();
+  let terjawab = q.tipe=="PG" ? !!JAWAB_PG[INDEX] : !!(JAWAB_ESSAY[INDEX]&&JAWAB_ESSAY[INDEX].trim()!="");
+  let h="<h3>"+MAPEL_SISWA+" - "+KELAS_SISWA+"</h3><p>Nama: <b>"+NAMA+"</b></p>";
+  h+="<div style='background:#e3f2fd;padding:12px;border-radius:12px'><b>Soal "+(INDEX+1)+" dari "+SOAL.length+" | Sudah dijawab: "+sudah+" dari "+SOAL.length+"</b><div class='progress'><div class='progress-bar' style='width:"+Math.round(sudah/SOAL.length*100)+"%'>"+Math.round(sudah/SOAL.length*100)+"%</div></div></div>";
+  h+="<div class='kotak-soal'><p><b>Soal "+(INDEX+1)+".</b> "+bersihkanTeks(q.soal)+" <span class='status-soal "+(terjawab?"sudah":"belum")+"'>"+(terjawab ? "✅ Sudah dijawab"+(q.tipe=="PG"?" : "+JAWAB_PG[INDEX]:"") : "⏳ Belum dijawab")+"</span></p>";
+  h+=ambilGambar(q);
+  if(q.soal && String(q.soal).indexOf("data:image")!==-1){ let m=String(q.soal).match(/data:image\/[a-z]+;base64,[A-Za-z0-9+\/=]+/); if(m) h+="<img class='gambar-soal' src='"+m[0]+"'>"; }
+  if(q.tipe=="PG"){
+    ["A","B","C","D"].forEach(k=>{
+      let val=k=="A"?q.a:k=="B"?q.b:k=="C"?q.c:q.d;
+      let aktif=JAWAB_PG[INDEX]==k?" pilih":"";
+      if(val && (String(val).indexOf("data:image")===0||String(val).indexOf("http")===0&&String(val).indexOf(" ")===-1)){
+        h+="<div class='opt"+aktif+"' onclick=\"pilih("+INDEX+",'"+k+"',this)\"><b>"+k+".</b><img class='gambar-opt' src='"+val+"'></div>";
+      } else {
+        h+="<div class='opt"+aktif+"' onclick=\"pilih("+INDEX+",'"+k+"',this)\"><b>"+k+".</b> "+bersihkanTeks(val)+"</div>";
+      }
+    });
+  } else {
+    h+="<textarea id='essayNow' oninput=\"JAWAB_ESSAY["+INDEX+"]=this.value; updateStatusSatu();\" placeholder='Tulis jawaban essay disini...'>"+(JAWAB_ESSAY[INDEX]||"")+"</textarea>";
+  }
+  h+="</div>";
+  h+="<div class='timer-box' id='timerBox'>⏳ Baca & kerjakan dulu... Tunggu 60 detik untuk lanjut</div>";
+  h+="<p style='font-size:12px;text-align:center;color:#888'>⏱️ Tiap soal dikasih waktu 1 menit biar dibaca dulu, jangan asal klik.</p>";
   document.getElementById('soalArea').innerHTML=h;
+  // Tombol navigasi
+  document.getElementById('btnPrev').disabled = INDEX==0;
+  document.getElementById('btnPrev').style.display = INDEX==0 ? "none" : "block";
+  let isTerakhir = INDEX==SOAL.length-1;
+  document.getElementById('btnNext').style.display = isTerakhir ? "none" : "block";
+  document.getElementById('btnKirim').style.display = isTerakhir ? "block" : "none";
+  // Kalau soal terakhir, tombol kirim juga harus nunggu 1 menit
+  if(isTerakhir){ document.getElementById('btnKirim').disabled=true; }
+  mulaiTimer();
+  // Timer juga untuk tombol kirim di soal terakhir
+  if(isTerakhir){
+    setTimeout(()=>{ let k=document.getElementById('btnKirim'); if(k && INDEX==SOAL.length-1) k.disabled=false; }, JEDA_DETIK*1000);
+  }
+  window.scrollTo(0,0);
+}
+function updateStatusSatu(){ tampilSatuSoalTanpaResetTimer(); }
+function tampilSatuSoalTanpaResetTimer(){
+  // Update label status aja tanpa reset timer, biar essay ngetik timer nggak ke-reset
+  let q=SOAL[INDEX];
+  let terjawab = q.tipe=="PG" ? !!JAWAB_PG[INDEX] : !!(JAWAB_ESSAY[INDEX]&&JAWAB_ESSAY[INDEX].trim()!="");
+  let els=document.querySelectorAll('.status-soal');
+  if(els[0]){ els[0].innerText=terjawab?"✅ Sudah dijawab"+(q.tipe=="PG"?" : "+JAWAB_PG[INDEX]:""):"⏳ Belum dijawab"; els[0].className="status-soal "+(terjawab?"sudah":"belum"); }
 }
 function pilih(i,k,el){
+  if(SUDAH_KIRIM) return;
   JAWAB_PG[i]=k;
   let p=el.parentElement.querySelectorAll('.opt'); p.forEach(x=>x.classList.remove('pilih'));
   el.classList.add('pilih');
+  tampilSatuSoalTanpaResetTimer();
+  // Update hitungan di atas
+  let sudah=hitungSudah();
+  let bars=document.querySelectorAll('.progress-bar');
+  if(bars[0]){ bars[0].style.width=Math.round(sudah/SOAL.length*100)+"%"; bars[0].innerText=Math.round(sudah/SOAL.length*100)+"%"; }
+}
+function pindah(arah){
+  // Simpan essay sebelum pindah
+  let ta=document.getElementById('essayNow'); if(ta) JAWAB_ESSAY[INDEX]=ta.value;
+  // Cek kalau mau maju tapi timer belum habis
+  if(arah==1 && !SUDAH_LEWAT[INDEX]){ alert("⏳ Tunggu dulu! Baca soalnya dulu 1 menit.\nSisa waktu ada di kotak orange."); return; }
+  INDEX+=arah;
+  if(INDEX<0) INDEX=0;
+  if(INDEX>=SOAL.length) INDEX=SOAL.length-1;
+  tampilSatuSoal();
 }
 function kirim(){
-  let nilai=0, totalPG=0;
-  SOAL.forEach((q,i)=>{ if(q.tipe=="PG"){ totalPG++; if(JAWAB_PG[i]==q.kunci) nilai++; } });
-  let nilaiPG = totalPG>0 ? Math.round(nilai/totalPG*100) : 0;
+  if(SUDAH_KIRIM){ alert("Jawaban sudah terkirim!"); return; }
+  let ta=document.getElementById('essayNow'); if(ta) JAWAB_ESSAY[INDEX]=ta.value;
+  let nilai=0, totalPG=0, belum=[];
+  SOAL.forEach((q,i)=>{ if(q.tipe=="PG"){ totalPG++; if(JAWAB_PG[i]==q.kunci) nilai++; if(!JAWAB_PG[i]) belum.push(i+1); } else { if(!JAWAB_ESSAY[i]||JAWAB_ESSAY[i].trim()=="") belum.push(i+1); } });
+  let nilaiPG=totalPG>0?Math.round(nilai/totalPG*100):0;
+  if(belum.length>0){ if(!confirm("⚠️ Masih ada yang belum dijawab: No. "+belum.join(", ")+"\nTetap kirim?")) return; }
   if(!confirm("Kirim jawaban? Nilai PG kamu: "+nilaiPG)){return;}
-  fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"kirimJawaban",nama:NAMA,kelas:KELAS_SISWA,mapel:MAPEL_SISWA,nilaiPG:nilaiPG,jawabanPG:JAWAB_PG,jawabanEssay:JAWAB_ESSAY})}).then(()=>{ alert("✅ Jawaban terkirim! Nilai PG: "+nilaiPG+"\nTerima kasih "+NAMA); location.reload(); });
+  SUDAH_KIRIM=true; clearInterval(TIMER);
+  let btn=document.getElementById('btnKirim'); btn.disabled=true; btn.innerText="⏳ MENGIRIM... JANGAN TUTUP";
+  localStorage.setItem(kunciKirim(),"YA");
+  fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"kirimJawaban",nama:NAMA,kelas:KELAS_SISWA,mapel:MAPEL_SISWA,nilaiPG:nilaiPG,jawabanPG:JAWAB_PG,jawabanEssay:JAWAB_ESSAY})}).then(()=>{
+    document.getElementById('soalArea').insertAdjacentHTML('afterbegin',"<div class='terkirim'>✅ JAWABAN SUDAH TERKIRIM!<br>Nama: "+NAMA+"<br>Mapel: "+MAPEL_SISWA+"<br>Nilai PG: "+nilaiPG+"<br><span style='font-size:13px;font-weight:400'>Jangan kirim lagi. Silahkan tutup halaman ini.</span></div>");
+    btn.innerText="✅ SUDAH TERKIRIM - TIDAK BISA KIRIM LAGI";
+    document.querySelectorAll('textarea').forEach(t=>t.disabled=true);
+    document.querySelectorAll('.opt').forEach(o=>o.style.pointerEvents='none');
+    document.querySelectorAll('.nav button').forEach(b=>b.disabled=true);
+    alert("✅ Jawaban terkirim! Nilai PG: "+nilaiPG);
+  });
 }
 </script></body></html>
